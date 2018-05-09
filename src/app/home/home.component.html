@@ -1,0 +1,42 @@
+<div *ngFor="let notification of notifications" (click)="removeNotification(notification)" class="alert alert-primary">
+  {{notification}}
+</div>
+
+<h1>
+  Screengroups:
+</h1>
+
+<ul>
+  <li *ngFor="let screengroup of screengroups">
+    {{ screengroup.name }}
+    <button class="btn-small" (click)="loadChildren(screengroup)">Load children</button>
+    <button class="btn-small" (click)="loadChildrenFirstLevel(screengroup)">Load firstlevel children</button>
+    <label for="addModal" class="paper-btn btn-primary btn-small" (click)="selectScreengroup(screengroup)" (click)="setMode('Edit')">Edit</label>
+    <label class="paper-btn btn-secondary btn-small" (click)="selectScreengroup(screengroup)" (click)="setMode('Add')" for="addModal">Add child</label>
+    <ul>
+      <li *ngFor="let child of screengroup.children" class="child">
+        {{ child.name }}
+        <label for="addModal" class="paper-btn btn-danger btn-small" (click)="selectScreengroup(screengroup)" (click)="selectChild(child)" (click)="setMode('Remove')">Remove</label>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+<input class="modal-state" id="addModal" type="checkbox">
+<div class="modal">
+  <label class="modal-bg" for="addModal"></label>
+  <div class="modal-body">
+    <label class="btn-close" for="addModal">X</label>
+    <h4 class="modal-title">{{ mode }} child</h4>
+    <div *ngIf="mode === 'Add' || mode === 'Edit'" class="form-group">
+      <label for="paperInputs3">Name</label>
+      <input *ngIf="mode === 'Add'" class="input-block" type="text" id="paperInputs3" [(ngModel)]="childName">
+      <input *ngIf="mode === 'Edit'" class="input-block" type="text" id="paperInputs3" [(ngModel)]="screengroupName">
+    </div>
+    <p *ngIf="mode === 'Remove'" class="modal-text">Are you sure you want to remove {{ selectedChild?.name }}?</p>
+    <label class="paper-btn btn-block" for="addModal" (click)="handleAction()">{{ mode }}</label>
+    <label class="paper-btn btn-block" for="addModal">No, I changed my mind!</label>
+  </div>
+</div>
+
+<button class="btn-danger" (click)="logout()">Logout</button>
