@@ -17,14 +17,15 @@ export class HomeComponent implements OnInit {
   childName: string;
   screengroupName: string;
   mode: string;
-  notifications: string[] = [];
+  notifications: any[] = [];
+  childLoading: boolean;
   constructor(private router: Router, private authService: AuthService, private screengroupService: ScreengroupService) {}
 
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
       this.screengroupService.get().subscribe(
         (res: any) => this.screengroups = res.mainScreenGroups,
-        error => this.notifications.push(<any>error.message)
+        error => this.notifications.push(<any>error)
       );
     } else {
       this.router.navigate(['/login']);
@@ -32,21 +33,29 @@ export class HomeComponent implements OnInit {
   }
 
   loadChildren(screengroup: Screengroup) {
+    this.childLoading = true;
     this.screengroupService.getChildren(screengroup).subscribe(
       (res: any) => screengroup.children = res.children,
-      error => this.notifications.push(<any>error.message)
+      error => this.notifications.push(<any>error),
+      () => this.childLoading = false
     );
   }
 
   loadChildrenFirstLevel(screengroup: Screengroup) {
+    this.childLoading = true;
     this.screengroupService.getChildrenFirstLevel(screengroup).subscribe(
       (res: any) => screengroup.children = res.children,
-      error => this.notifications.push(<any>error.message)
+      error => this.notifications.push(<any>error),
+      () => this.childLoading = false
     );
   }
 
   selectScreengroup(screengroup: Screengroup) {
     this.selectedScreengroup = screengroup;
+  }
+
+  hideChildren(screengroup: Screengroup) {
+    this.selectedScreengroup.children = [];
   }
 
   selectChild(child: Screengroup) {
@@ -56,7 +65,7 @@ export class HomeComponent implements OnInit {
   addChild() {
     this.screengroupService.addChild(this.selectedScreengroup, this.childName).subscribe(
       res => this.notifications.push(<any>res),
-      error => this.notifications.push(<any>error.message)
+      error => this.notifications.push(<any>error)
     );
   }
 
@@ -68,7 +77,7 @@ export class HomeComponent implements OnInit {
         this.selectedScreengroup.name = res.name;
       },
       error => {
-        this.notifications.push(<any>error.message);
+        this.notifications.push(<any>error);
         console.log(error);
       }
     );
@@ -80,7 +89,7 @@ export class HomeComponent implements OnInit {
         this.notifications.push(<any>res);
         this.selectedScreengroup.children = this.selectedScreengroup.children.filter(child => child.id !== this.selectedChild.id);
       },
-      error => this.notifications.push(<any>error.message)
+      error => this.notifications.push(<any>error)
     );
   }
 

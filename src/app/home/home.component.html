@@ -1,5 +1,8 @@
 <div *ngFor="let notification of notifications" (click)="removeNotification(notification)" class="alert alert-primary">
-  {{notification}}
+  <p *ngIf="notification.status === 200">Successful</p>
+  <p *ngIf="notification.status === 403">The authentication is failed</p>
+  <p *ngIf="notification.status === 400">The call does not have the required format</p>
+  <p *ngIf="notification.status !== 200 && notification.status !== 403 && notification.status !== 400">{{ notification.message }}</p>
 </div>
 
 <h1>
@@ -9,8 +12,9 @@
 <ul>
   <li *ngFor="let screengroup of screengroups">
     {{ screengroup.name }}
-    <button class="btn-small" (click)="loadChildren(screengroup)">Load children</button>
-    <button class="btn-small" (click)="loadChildrenFirstLevel(screengroup)">Load firstlevel children</button>
+    <button class="btn-small" (click)="loadChildren(screengroup)" [disabled]="childLoading">Load children</button>
+    <button class="btn-small" (click)="loadChildrenFirstLevel(screengroup)" [disabled]="childLoading">Load firstlevel children</button>
+    <button class="btn-small" (click)="selectScreengroup(screengroup)" (click)="hideChildren(screengroup)">Hide children</button>
     <label for="addModal" class="paper-btn btn-primary btn-small" (click)="selectScreengroup(screengroup)" (click)="setMode('Edit')">Edit</label>
     <label class="paper-btn btn-secondary btn-small" (click)="selectScreengroup(screengroup)" (click)="setMode('Add')" for="addModal">Add child</label>
     <ul>
@@ -27,7 +31,7 @@
   <label class="modal-bg" for="addModal"></label>
   <div class="modal-body">
     <label class="btn-close" for="addModal">X</label>
-    <h4 class="modal-title">{{ mode }} child</h4>
+    <h4 class="modal-title">{{ mode }} entity</h4>
     <div *ngIf="mode === 'Add' || mode === 'Edit'" class="form-group">
       <label for="paperInputs3">Name</label>
       <input *ngIf="mode === 'Add'" class="input-block" type="text" id="paperInputs3" [(ngModel)]="childName">

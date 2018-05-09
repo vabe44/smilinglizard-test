@@ -1,5 +1,8 @@
 <div *ngIf="invalidLogin" (click)="hideError()" class="alert alert-danger">
-  {{ error?.message }}
+  <p *ngIf="error.status === 200">Successful</p>
+  <p *ngIf="error.status === 403">The authentication is failed</p>
+  <p *ngIf="error.status === 400">The call does not have the required format</p>
+  <p *ngIf="error.status !== 200 && error.status !== 403 && error.status !== 400">{{ error.message }}</p>
 </div>
 
 <div class="row flex-center">
