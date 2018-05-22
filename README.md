@@ -1,6 +1,6 @@
 # SmilinglizardTest
 
-Time to complete: ~8 hours
+Time to complete: ~6 hours
 
 ## Development server
 
